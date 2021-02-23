@@ -34,8 +34,7 @@ void Query::rrdb_query(std::string topic,std::string sqry)
 {
 	RRdb::query_t qry;
 	RRdb::response_t resp;
-	std::string out;
-	JSonDecoder jreq(sqry.c_str());
+	RRdbDecoder jreq(sqry.c_str());
 	if (jreq.error())
 	{
 		logger->log(Logger::LOG_ERROR,"APP","JSON parse error in %s",sqry.c_str());
@@ -43,10 +42,9 @@ void Query::rrdb_query(std::string topic,std::string sqry)
 	}
 	jreq.query(qry);
 	int ret = rrDb->query(qry,resp);
-	if (ret>=0)
+	if (ret == 0)
 	{
-		JSonEncoder jresp;
-		out = jresp.response(resp);
+		std::string out = encode_response(resp);
 		std::string topicresp=topic.replace(0,11,"/query/resp/");
 		msgSrv->publish(topicresp,out);
 	}

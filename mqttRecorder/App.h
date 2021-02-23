@@ -8,7 +8,6 @@
 #ifndef MQTTRECORDER_APP_H_
 #define MQTTRECORDER_APP_H_
 #include "RRdb.h"
-#include "JSon.h"
 #include "MsgSys.h"
 #include "Logger.h"
 #include "Recorder.h"

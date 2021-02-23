@@ -46,23 +46,7 @@ App::App()
 	msgSrv = new MsgSrv("recorder","domotica", "domotica","localhost",1883);
 	rrDb = new RRdb("/tmp/rrdcached.sock","/var/lib/rrdcached/db/");
 
-	rrd_value_t * data=NULL;
-	RRdb::query_t qry;
-	RRdb::response_t resp;
-	qry.start="now-1d";
-	qry.end="now";
-	qry.step=600;
-	qry.tracks={{"_domotica_energia_main_P","AVERAGE"},{"_domotica_energia_main_P","MAX"}};
-	if (rrDb->query(qry,resp) == 0)
-	{
-		JSonEncoder jresp;
-		printf("\n%s\n",jresp.response(resp).c_str());
-	}
-
-	logger->log(Logger::LOG_VERBOSE,"App","ready");
-
 	msgSrv->subscribe((MsgClient*)this,"local::/#");
-	msgSrv->dispatch("local::/test","prova");
 }
 
 App::~App() {

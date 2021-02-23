@@ -10,7 +10,10 @@
 
 #include <cjson/cJSON.h>
 #include <string>
-#include <RRdb.h>
+#include <vector>
+
+std::string jobj_encode(cJSON * _jobj);
+
 
 class JSonDecoder{
 public:
@@ -22,21 +25,10 @@ public:
 	bool field(std::string array,std::string tag,int idx, std::string &value);
 
 	bool arraySize(std::string tag, int &value);
-	bool query(RRdb::query_t &qry);
-private:
+protected:
 	cJSON * object(std::string tag);
 	cJSON *_jobj;
 	bool	_error;
-};
-
-
-class JSonEncoder{
-public:
-	JSonEncoder();
-	virtual ~JSonEncoder();
-	std::string response(RRdb::response_t &resp);
-private:
-	cJSON *_jobj;
 };
 
 

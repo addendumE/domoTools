@@ -101,10 +101,9 @@ int RRdb::update(string topic,double value)
 int RRdb::query(query_t &qry,response_t &resp)
 {
 	rrd_value_t *data;
-	int ret = 0;
+	int ret;
 	int tCount = qry.tracks.size();
 	logger->log(Logger::LOG_VERBOSE,TAG,"query from %s to %s step %ld",qry.start.c_str(),qry.end.c_str(),qry.step);
-	int i;
 	string filename[tCount];
 	string xport[tCount];
 	vector <const char*> cmd;
@@ -115,7 +114,6 @@ int RRdb::query(query_t &qry,response_t &resp)
 	cmd.push_back(sres.c_str());
 	cmd.push_back(sstart.c_str());
 	cmd.push_back(send.c_str());
-	i=0;
 	for (int i=0; i<tCount;i++)
 	{
 		filename[i] = "DEF:val"+to_string(i)+"="+topicToFile(qry.tracks[i].topic)+".rrdb:value:"+qry.tracks[i].cf;
@@ -143,20 +141,12 @@ int RRdb::query(query_t &qry,response_t &resp)
 	{
 		free((ds_namv)[0]);
 		free(ds_namv);
-		ret  = tCount * (real_end - real_start) / real_step;
+		int samples = tCount * (real_end - real_start) / real_step;
 		resp.start = real_start;
 		resp.end = real_end;
 		resp.step = real_step;
-		for (int i=0; i<qry.tracks.size(); i++)
-		{
-			vector<float>* vect = new vector<float>;
-			resp.data.push_back(vect);
-		}
-		rrd_value_t *pnt = data;
-		for (int i=0; i<ret; i++)
-		{
-			resp.data[i%tCount]->push_back(*pnt++);
-		}
+		resp.tracks = tCount;
+		resp.data.insert(resp.data.begin(), data,data + samples);
 		free(data);
 	}
 	else
@@ -167,3 +157,6 @@ int RRdb::query(query_t &qry,response_t &resp)
 
 	return ret;
 }
+
+
+

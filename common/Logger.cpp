@@ -43,10 +43,10 @@ void Logger::log(log_t level,std::string tag,std::string fmt,...)
 	}
 	fmt = std::string(date,strlen(date)-1) +  " " + sLevel + " " + tag + " "  + " " + fmt + "\n";
 	const char * cfmt=fmt.c_str();
-	 va_list argptr;
-	 va_start(argptr, cfmt);
-	 vfprintf(stderr, cfmt, argptr);
-	 va_end(argptr);
+	va_list argptr;
+	va_start(argptr, cfmt);
+	vfprintf(stderr, cfmt, argptr);
+	va_end(argptr);
 }
 
 

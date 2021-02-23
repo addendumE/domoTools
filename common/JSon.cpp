@@ -128,89 +128,19 @@ JSonDecoder::~JSonDecoder() {
 	cJSON_Delete(_jobj);
 }
 
-bool JSonDecoder::query(RRdb::query_t &qry)
+std::string jobj_encode(cJSON * _jobj)
 {
-	field("start",qry.start);
-	field("end",qry.end);
-	field("step",qry.step);
-	logger->log(Logger::LOG_DEBUG,TAG_DEC ,"query from %s to %s step %lu",
-			qry.start.c_str(),
-			qry.end.c_str(),
-			qry.step
-	);
-	int i=0;
-	arraySize("tracks",i);
-	for (int n=0;n<i;n++)
-	{
-		std::string topic;
-		std::string cf;
-		field("tracks","topic",n,topic);
-		field("tracks","cf",n,cf);
-		RRdb::track_t track;
-		track.topic=topic;
-		track.cf=cf;
-		qry.tracks.push_back(track);
-	}
-	return true;
-}
-
-
-JSonEncoder::JSonEncoder() {
-	logger->level(TAG_ENC,Logger::LOG_VERBOSE);
-	_jobj = cJSON_CreateObject();
-}
-
-JSonEncoder::~JSonEncoder()
-{
-	cJSON_Delete(_jobj);
-}
-
-string JSonEncoder::response(RRdb::response_t &resp)
-{
-	cJSON_AddNumberToObject(_jobj,"start",resp.start);
-	cJSON_AddNumberToObject(_jobj,"end",resp.end);
-	cJSON_AddNumberToObject(_jobj,"step",resp.step);
-	cJSON_AddNumberToObject(_jobj,"samples",resp.data[0]->size());
-
-	double max[resp.data.size()];
-	double min[resp.data.size()];
-
-	struct cJSON * array = cJSON_CreateArray();
-	cJSON_AddItemToObject(_jobj, "data",array);
-	for (int i=0;i<resp.data.size();i++)
-	{
-		max[i]=FLT_MIN;
-		min[i]=FLT_MAX;
-
-		struct cJSON * tmp = cJSON_CreateArray();
-		for (int m=0;m<resp.data[i]->size();m++)
-		{
-			double val = (*resp.data[i])[m];
-			//double val = 30.0 * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-			struct cJSON * num = cJSON_CreateNumber(val);
-			cJSON_AddItemToArray(tmp,num);
-			if (!isnan(val) && num!=NULL)
-			{
-				if (val>max[i]) max[i]=val;
-				if (val<min[i]) min[i]=val;
-			}
-
-		}
-		cJSON_AddItemToArray(array,tmp);
-	}
-	cJSON_AddItemToObject(_jobj, "max",cJSON_CreateDoubleArray(max,resp.data.size()));
-	cJSON_AddItemToObject(_jobj, "min",cJSON_CreateDoubleArray(min,resp.data.size()));
-
-
-	//cJSON_AddItemToObject(jresp, "data",resp.dataarray);
-
-
-
-
-
 	char * outStr= cJSON_PrintUnformatted(_jobj);
-	std::string ret = string(outStr);
-	free(outStr);
+	std::string ret;
+	if (outStr)
+	{
+		ret = std::string(outStr);
+		free(outStr);
+	}
+	else
+	{
+		logger->log(Logger::LOG_ERROR,TAG_ENC ,"encode error");
+
+	}
 	return ret;
 }
-

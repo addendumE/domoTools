@@ -33,9 +33,8 @@ public:
 		time_t start;
 		time_t end;
 		unsigned long step;
-		int	records;
-		int columns;
-		vector<vector<float>*> data;
+		unsigned int tracks;
+		std::vector <double> data;
 	};
 
 	RRdb(std::string daemon,std::string dbfolder);
