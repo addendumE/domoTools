@@ -62,6 +62,8 @@ void Mqtt::mqtt_subscribe(std::string topic)
 {
 	int ret;
 	ret = mosquitto_subscribe(_client,NULL,topic.c_str(),QOS);
+	logger.log(Logger::LOG_ERROR,TAG,"subscribing  %s",topic.c_str());
+
 	if (ret != MOSQ_ERR_SUCCESS)
 	{
 		logger.log(Logger::LOG_ERROR,TAG,"subscribe error %s",mosquitto_strerror(ret));
