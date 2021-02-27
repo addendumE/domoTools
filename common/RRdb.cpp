@@ -16,23 +16,29 @@ extern "C" {
 }
 #include "Logger.h"
 
-extern Logger * logger;
+extern Logger logger;
 #define TAG "RRDB"
 
-RRdb::RRdb(string daemon,string dbFolder ):
-		_dbFolder(dbFolder){
-	int ret;
-	logger->level(TAG,Logger::LOG_VERBOSE);
-	ret = rrdc_connect(daemon.c_str());
-	if (ret)
-		logger->log(Logger::LOG_ERROR,TAG,"%s",rrd_get_error());
-	else
-		logger->log(Logger::LOG_DEBUG,TAG,"rrdcached connected");
-
+RRdb::RRdb()
+{
+	logger.level(TAG,Logger::LOG_ERROR);
 }
 
 RRdb::~RRdb() {
 	// TODO Auto-generated destructor stub
+}
+
+bool RRdb::start(std::string daemon,std::string dbfolder)
+{
+	_dbFolder = dbfolder;
+	int ret;
+	logger.level(TAG,Logger::LOG_VERBOSE);
+	ret = rrdc_connect(daemon.c_str());
+	if (ret)
+		logger.log(Logger::LOG_ERROR,TAG,"%s",rrd_get_error());
+	else
+	logger.log(Logger::LOG_DEBUG,TAG,"rrdcached connected");
+	return (ret==0);
 }
 
 string RRdb::topicToFile(string topic)
@@ -58,11 +64,11 @@ int RRdb::create(string topic)
 	ret = rrdc_create(filename.c_str(),1,946684800,1,cmd.size(),(const char**)&cmd[0]);
 	if (ret)
 	{
-		logger->log(Logger::LOG_ERROR,TAG,"%s",rrd_get_error());
+		logger.log(Logger::LOG_ERROR,TAG,"%s",rrd_get_error());
 	}
 	else
 	{
-		logger->log(Logger::LOG_DEBUG,TAG,"create %s",filename.c_str());
+		logger.log(Logger::LOG_DEBUG,TAG,"create %s",filename.c_str());
 	}
 	return ret;
 }
@@ -82,17 +88,17 @@ int RRdb::update(string topic,double value)
 		string errmsg(rrd_get_error());
 		if (errmsg.find("No such file:") == string::npos)
 		{
-			logger->log(Logger::LOG_ERROR,TAG,"%s",rrd_get_error());
+			logger.log(Logger::LOG_ERROR,TAG,"%s",rrd_get_error());
 		}
 		else
 		{
-			logger->log(Logger::LOG_DEBUG,TAG,"%s",rrd_get_error());
+			logger.log(Logger::LOG_DEBUG,TAG,"%s",rrd_get_error());
 			ret=1;//ask for db creation
 		}
 	}
 	else
 	{
-		logger->log(Logger::LOG_VERBOSE,TAG,"%s updated with %f",topic.c_str(),value);
+		logger.log(Logger::LOG_VERBOSE,TAG,"%s updated with %f",topic.c_str(),value);
 	}
 	return ret;
 }
@@ -103,7 +109,7 @@ int RRdb::query(query_t &qry,response_t &resp)
 	rrd_value_t *data;
 	int ret;
 	int tCount = qry.tracks.size();
-	logger->log(Logger::LOG_VERBOSE,TAG,"query from %s to %s step %ld",qry.start.c_str(),qry.end.c_str(),qry.step);
+	logger.log(Logger::LOG_VERBOSE,TAG,"query from %s to %s step %ld",qry.start.c_str(),qry.end.c_str(),qry.step);
 	string filename[tCount];
 	string xport[tCount];
 	vector <const char*> cmd;
@@ -151,7 +157,7 @@ int RRdb::query(query_t &qry,response_t &resp)
 	}
 	else
 	{
-		logger->log(Logger::LOG_ERROR,TAG,"error: %s",rrd_get_error());
+		logger.log(Logger::LOG_ERROR,TAG,"error: %s",rrd_get_error());
 		ret = -1;
 	}
 

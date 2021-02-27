@@ -20,6 +20,7 @@ class Query: public MsgClient {
 public:
 	Query();
 	virtual ~Query();
+	bool start(std::string);
 private:
 	void msg_notify (std::string topic, std::string data);
 	void rrdb_query(std::string topic,std::string sqry);

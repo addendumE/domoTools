@@ -15,7 +15,6 @@
 Logger::Logger(std::string filename)
 {
 	// TODO Auto-generated constructor stub
-
 }
 
 Logger::~Logger() {

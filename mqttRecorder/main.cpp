@@ -1,13 +1,17 @@
 #include "App.h"
+#include <string>
 
-using namespace std;
-
-// rsync -avz -e ssh . pi@192.168.1.113:/mqttRRdb
-
-App app;
-
+App *app;
 
 int main(int argc, char **argv) {
+
+	if (argc != 2)
+	{
+		fprintf (stderr,"missing conf file\n");
+		return -1;
+	}
+	std::string confFile=string(argv[1]);
+	app = new App(confFile);
 	while(1) {
 	    sleep(1);
     }

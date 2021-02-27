@@ -5,29 +5,24 @@
  *      Author: maurizio
  */
 
-#ifndef MQTTRECORDER_APP_H_
-#define MQTTRECORDER_APP_H_
-#include "RRdb.h"
-#include "JSon.h"
+#ifndef DOMOMANAGER_APP_H_
+#define DOMOMANAGER_APP_H_
 #include "MsgSys.h"
-
 #include "Logger.h"
+#include "History.h"
+
+
 #include <string.h>
 
-class App: public RRdb , MsgClient, MsgSrv
+
+class App: public MsgClient
 {
 public:
-	App();
+	App(std::string);
 	virtual ~App();
 private:
 	void msg_notify (std::string topic, std::string data);
-
-	int update_sample(string topicName, string payload);
-	void rrdb_query(std::string topic,std::string qry);
-	static void data_topic_msg(std::string topic,std::string message,void *data);
-	static void qry_topic_msg(std::string topic,std::string message,void *data);
-	static void local_topic_msg(std::string topic,std::string message,void *data);
-
+	vector <History *> _histories;
 };
 
-#endif /* MQTTRECORDER_APP_H_ */
+#endif /* DOMOMANAGER_APP_H_ */

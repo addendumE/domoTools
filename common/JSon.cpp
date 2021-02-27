@@ -10,18 +10,18 @@
 #include <float.h>
 #include <math.h>
 
-extern Logger *logger;
+extern Logger logger;
 
 #define TAG_DEC "JSonDecoder"
 #define TAG_ENC "JSonEncoder"
 
 
 JSonDecoder::JSonDecoder(std::string txt) {
-	logger->level(TAG_DEC,Logger::LOG_VERBOSE);
+	logger.level(TAG_DEC,Logger::LOG_VERBOSE);
 	_jobj = cJSON_Parse(txt.c_str());
 	if (_jobj == NULL)
 	{
-		logger->log(Logger::LOG_ERROR,TAG_DEC ,"parse error in %s",txt.c_str());
+		logger.log(Logger::LOG_ERROR,TAG_DEC ,"parse error in %s",txt.c_str());
 		_error = true;
 	}
 	else
@@ -36,7 +36,7 @@ cJSON * JSonDecoder::object(std::string tag)
 	jtmp = cJSON_GetObjectItem(_jobj,tag.c_str());
 	if (jtmp == NULL)
 	{
-		logger->log(Logger::LOG_ERROR,TAG_DEC ,"field %s not found",tag.c_str());
+		logger.log(Logger::LOG_ERROR,TAG_DEC ,"field %s not found",tag.c_str());
 	}
 	return jtmp;
 
@@ -52,7 +52,7 @@ bool JSonDecoder::field(std::string tag, std::string &value)
 	}
 	if (!cJSON_IsString(_jtmp))
 	{
-		logger->log(Logger::LOG_ERROR,TAG_DEC ,"field %s is not a string",tag.c_str());
+		logger.log(Logger::LOG_ERROR,TAG_DEC ,"field %s is not a string",tag.c_str());
 		return false;
 	}
 	value = std::string(_jtmp->valuestring);
@@ -69,7 +69,7 @@ bool JSonDecoder::field(std::string tag, unsigned long &value)
 	}
 	if (!cJSON_IsNumber(_jtmp))
 	{
-		logger->log(Logger::LOG_ERROR,TAG_DEC ,"field %s is not a string",tag.c_str());
+		logger.log(Logger::LOG_ERROR,TAG_DEC ,"field %s is not a string",tag.c_str());
 		return false;
 	}
 	value = _jtmp->valueint;
@@ -86,7 +86,7 @@ bool JSonDecoder::arraySize(std::string tag, int &value)
 	}
 	if (!cJSON_IsArray(_jtmp))
 	{
-		logger->log(Logger::LOG_ERROR,TAG_DEC ,"field %s is not an aray",tag.c_str());
+		logger.log(Logger::LOG_ERROR,TAG_DEC ,"field %s is not an aray",tag.c_str());
 		return false;
 	}
 	value = cJSON_GetArraySize(_jtmp);
@@ -104,12 +104,12 @@ bool JSonDecoder::field(std::string array,std::string tag,int idx, std::string &
 	}
 	if (!cJSON_IsArray(_jtmp))
 	{
-		logger->log(Logger::LOG_ERROR,TAG_DEC ,"field %s is not an aray",tag.c_str());
+		logger.log(Logger::LOG_ERROR,TAG_DEC ,"field %s is not an aray",tag.c_str());
 		return false;
 	}
 	if (idx>=cJSON_GetArraySize(_jtmp))
 	{
-		logger->log(Logger::LOG_ERROR,TAG_DEC ,"index bigger than array",tag.c_str());
+		logger.log(Logger::LOG_ERROR,TAG_DEC ,"index bigger than array",tag.c_str());
 		return false;
 	}
 	cJSON *_jtmp1 = cJSON_GetArrayItem(_jtmp, idx);
@@ -139,7 +139,7 @@ std::string jobj_encode(cJSON * _jobj)
 	}
 	else
 	{
-		logger->log(Logger::LOG_ERROR,TAG_ENC ,"encode error");
+		logger.log(Logger::LOG_ERROR,TAG_ENC ,"encode error");
 
 	}
 	return ret;

@@ -9,7 +9,7 @@ include_directories(${CMAKE_SOURCE_DIR}/common)
 add_subdirectory(common)
 add_subdirectory(mqttRecorder)
 add_subdirectory(bleGateway)
-#add_subdirectory(domoManager)
+add_subdirectory(domoManager)
 
 
 

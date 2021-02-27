@@ -20,7 +20,7 @@
 class App: public MsgClient
 {
 public:
-	App();
+	App(std::string);
 	virtual ~App();
 private:
 	void msg_notify (std::string topic, std::string data);

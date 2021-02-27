@@ -37,9 +37,10 @@ public:
 		std::vector <double> data;
 	};
 
-	RRdb(std::string daemon,std::string dbfolder);
+	RRdb();
 	virtual ~RRdb();
 
+	bool start(std::string daemon,std::string dbfolder);
 	int create(string);
 	int update(string topic,double value);
 	int bulk_update(string topic,long long cnt);

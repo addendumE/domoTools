@@ -10,19 +10,21 @@
 #include "MsgSys.h"
 #include "Logger.h"
 #include "pthread.h"
+#include "AppConfig.h"
+
 
 #include <string>
 
+
 class App: public MsgClient{
 public:
-	App();
+	App(std::string);
 	virtual ~App();
 private:
 	void bleProcess(std::string addr, std::string data);
 	void publish(string topic, float value);
 	void msg_notify (std::string topic, std::string data);
 	static void *scanThread(void *);
-	std::map <std::string,std::string> _devices;
 	pthread_t _thread_id;
 };
 

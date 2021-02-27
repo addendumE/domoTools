@@ -19,8 +19,9 @@
 
 #include <string>
 #include <Logger.h>
+#include "ble.h"
 
-extern Logger *logger;
+extern Logger logger;
 #define TAG "BLE"
 
 struct hci_request ble_hci_request(uint16_t ocf, int clen, void * status, void * cparam)
@@ -42,7 +43,7 @@ void ble_error(std::string hdr)
 {
 	char msg[128];
 	strerror_r(errno,msg,sizeof(msg)-1);
-	logger->log(Logger::LOG_ERROR,TAG,"%s:%s",hdr.c_str(),msg);
+	logger.log(Logger::LOG_ERROR,TAG,"%s:%s",hdr.c_str(),msg);
 }
 
 int ble_open()
@@ -54,7 +55,7 @@ int ble_open()
 		ble_error("Failed to open HCI device.");
 		return 0;
 	}
-	logger->log(Logger::LOG_DEBUG,TAG,"device opened");
+	logger.log(Logger::LOG_DEBUG,TAG,"device opened");
 	return 1;
 }
 
@@ -118,12 +119,12 @@ int ble_start_scan()
 		ble_error("Could not set socket options\n");
 		return 0;
 	}
-	logger->log(Logger::LOG_DEBUG,TAG,"scan started");
+	logger.log(Logger::LOG_DEBUG,TAG,"scan started");
 	return 1;
 }
 
 
-int ble_scan_loop(std::string &address, std::string &data)
+int ble_scan_loop(std::vector <ble_adv_t> &data)
 {
 	uint8_t buf[HCI_MAX_EVENT_SIZE];
 	evt_le_meta_event * meta_event;
@@ -140,8 +141,10 @@ int ble_scan_loop(std::string &address, std::string &data)
 			while ( reports_count-- ) {
 				info = (le_advertising_info *)offset;
 				ba2str(&(info->bdaddr), addr);
-				address = std::string(addr);
-				data= std::string(info->data,info->data+info->length+1);
+				ble_adv_t adv;
+				adv.mac = std::string(addr);
+				adv.data = std::string(info->data,info->data+info->length+1);
+				data.push_back(adv);
 				//bleProcess(addr,info->data,info->length);
 				offset = info->data + info->length + 2;
 			}
@@ -171,12 +174,12 @@ int ble_stop_scan()
 		ble_error("Failed to disable scan.");
 		return 0;
 	}
-	logger->log(Logger::LOG_DEBUG,TAG,"scan stopped");
+	logger.log(Logger::LOG_DEBUG,TAG,"scan stopped");
 	return 1;
 }
 
 void ble_close()
 {
 	hci_close_dev(device);
-	logger->log(Logger::LOG_DEBUG,TAG,"device closed");
+	logger.log(Logger::LOG_DEBUG,TAG,"device closed");
 }

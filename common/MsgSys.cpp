@@ -16,11 +16,17 @@ Subscription::Subscription(MsgClient *client, std::string topic):
 
 }
 
-MsgSrv::MsgSrv(std::string cid, std::string user, std::string password, std::string host, int port):
+MsgSrv::MsgSrv(std::string cid):
 		Mqtt(cid)
 {
-	mqtt_connect(user,password,host,port);
 }
+
+bool MsgSrv::start(std::string user, std::string password, std::string host, int port)
+{
+	mqtt_connect(user,password,host,port);
+	return true;
+}
+
 
 void MsgSrv::mqtt_disconnected(int code)
 {
@@ -68,5 +74,14 @@ void MsgSrv::subscribe(MsgClient *client,std::string topic)
 	if (topic.find("local::") != 0 )
 	{
 		mqtt_subscribe(topic);
+	}
+}
+
+void MsgSrv::subscribe(MsgClient *client,std::vector <std::string> topics)
+{
+	for (auto &topic : topics)
+	{
+		std::string t = topic;
+		subscribe(client,t);
 	}
 }

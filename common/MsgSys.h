@@ -39,9 +39,11 @@ private:
 class MsgSrv: public Mqtt
 {
 public:
-	MsgSrv(std::string cid, std::string user, std::string password, std::string host, int port);
+	MsgSrv(std::string cid);
 	virtual ~MsgSrv();
+	bool start(std::string user, std::string password, std::string host, int port);
 	void subscribe(MsgClient *,std::string);
+	void subscribe(MsgClient *client,std::vector <std::string> topics);
 	void dispatch(std::string, std::string);
 private:
 	void mqtt_disconnected(int);

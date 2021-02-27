@@ -13,7 +13,8 @@
 #include "MsgSys.h"
 #include "Logger.h"
 
-#include <string.h>
+#include <string>
+#include <vector>
 
 
 class Recorder: public MsgClient
@@ -21,6 +22,8 @@ class Recorder: public MsgClient
 public:
 	Recorder();
 	virtual ~Recorder();
+	bool start(std::vector <std::string> rec_topics);
+
 private:
 	void msg_notify (std::string topic, std::string data);
 	int update_sample(string topicName, string payload);
