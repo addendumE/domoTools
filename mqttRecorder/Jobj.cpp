@@ -11,7 +11,7 @@
 #include <float.h>
 #include <math.h>
 
-extern Logger *logger;
+extern Logger logger;
 
 #define TAG_DEC "JobjDec"
 #define TAG_ENC "JobjEnc"
@@ -19,10 +19,10 @@ extern Logger *logger;
 
 RRdbDecoder::RRdbDecoder(std::string txt):
 		JSonDecoder(txt) {
-	logger->level(TAG_DEC,Logger::LOG_VERBOSE);
+	logger.level(TAG_DEC,Logger::LOG_VERBOSE);
 	if (_error)
 	{
-		logger->log(Logger::LOG_ERROR,TAG_DEC ,"parse error in %s",txt.c_str());
+		logger.log(Logger::LOG_ERROR,TAG_DEC ,"parse error in %s",txt.c_str());
 	}
 }
 
@@ -35,7 +35,7 @@ bool RRdbDecoder::query(RRdb::query_t &qry)
 	field("start",qry.start);
 	field("end",qry.end);
 	field("step",qry.step);
-	logger->log(Logger::LOG_DEBUG,TAG_DEC ,"query from %s to %s step %lu",
+	logger.log(Logger::LOG_DEBUG,TAG_DEC ,"query from %s to %s step %lu",
 			qry.start.c_str(),
 			qry.end.c_str(),
 			qry.step
