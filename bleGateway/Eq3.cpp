@@ -27,7 +27,7 @@ Eq3::Eq3(std::string mac, std::string topic, std::string exec):
 		_topic(topic),
 		_eq3_exec(exec)
 {
-	msgSrv.subscribe((MsgClient*)this,_topic+"set/#");
+	msgSrv.subscribe((MsgClient*)this,_topic+"cmd");
 	logger.log(Logger::LOG_VERBOSE,TAG,"new  %s %s",_topic.c_str(),exec.c_str());
 	_data.valid = false;
 	_pid = -1;
@@ -151,17 +151,16 @@ int Eq3::decode(std::string fname)
 void Eq3::msg_notify (std::string topic, std::string message)
 {
 	logger.log(Logger::LOG_VERBOSE,TAG,"msg %s %s",topic.c_str(),message.c_str());
-	if (message == "")
-	{
-		eq3Cmd("status");
-	}
+	eq3Cmd(message);
 }
 
 int Eq3::eq3Cmd(std::string cmd)
 {
 	int retCode=-1;
 	_data.valid = false;
-	msgSrv.publish(_topic+"/wResult","-1");//cmd pending
+	logger.log(Logger::LOG_VERBOSE,TAG,"%s -> %s",_mac.c_str(),cmd.c_str());
+
+	msgSrv.publish(_topic+"cmdResult","BUSY");//cmd pending
 	const char * argv[]=
 	{
 		basename((char*)_eq3_exec.c_str()),
@@ -186,7 +185,7 @@ void Eq3::run(void)
 			{
 				decode(_fname);
 			}
-			msgSrv.publish(_topic+"/wResult",to_string(retCode));//cmd pending
+			msgSrv.publish(_topic+"cmdResult",(retCode)? "ERR " + to_string(retCode) : "OK");//cmd pending
 
 		}
 	}

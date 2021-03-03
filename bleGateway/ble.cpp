@@ -42,8 +42,8 @@ static int device;
 void ble_error(std::string hdr)
 {
 	char msg[128];
-	strerror_r(errno,msg,sizeof(msg)-1);
-	logger.log(Logger::LOG_ERROR,TAG,"%s:%s",hdr.c_str(),msg);
+	char *ret = strerror_r(errno,msg,sizeof(msg)-1);
+	logger.log(Logger::LOG_ERROR,TAG,"%s:(%d) %s",hdr.c_str(),errno,ret);
 }
 
 int ble_open()
@@ -72,7 +72,7 @@ int ble_start_scan()
 	scan_params_cp.filter 			= 0x00; // Accept all.
 
 	struct hci_request scan_params_rq = ble_hci_request(OCF_LE_SET_SCAN_PARAMETERS, LE_SET_SCAN_PARAMETERS_CP_SIZE, &status, &scan_params_cp);
-	ret = hci_send_req(device, &scan_params_rq, 1000);
+	ret = hci_send_req(device, &scan_params_rq, 5000);
 	if ( ret < 0 ) {
 		hci_close_dev(device);
 		ble_error("Failed to set scan parameters data.");
@@ -86,7 +86,7 @@ int ble_start_scan()
 	for ( i = 0 ; i < 8 ; i++ ) event_mask_cp.mask[i] = 0xFF;
 
 	struct hci_request set_mask_rq = ble_hci_request(OCF_LE_SET_EVENT_MASK, LE_SET_EVENT_MASK_CP_SIZE, &status, &event_mask_cp);
-	ret = hci_send_req(device, &set_mask_rq, 1000);
+	ret = hci_send_req(device, &set_mask_rq, 5000);
 	if ( ret < 0 ) {
 		hci_close_dev(device);
 		ble_error("Failed to set event mask.");
@@ -101,7 +101,7 @@ int ble_start_scan()
 
 	struct hci_request enable_adv_rq = ble_hci_request(OCF_LE_SET_SCAN_ENABLE, LE_SET_SCAN_ENABLE_CP_SIZE, &status, &scan_cp);
 
-	ret = hci_send_req(device, &enable_adv_rq, 1000);
+	ret = hci_send_req(device, &enable_adv_rq, 5000);
 	if ( ret < 0 ) {
 		hci_close_dev(device);
 		ble_error("Failed to enable scan.");
@@ -167,13 +167,15 @@ int ble_stop_scan()
 	// Disable scanning.
 	memset(&scan_cp, 0, sizeof(scan_cp));
 	scan_cp.enable = 0x00;	// Disable flag.
-	struct hci_request disable_adv_rq = ble_hci_request(OCF_LE_SET_SCAN_ENABLE, LE_SET_SCAN_ENABLE_CP_SIZE, &status, &scan_cp);
-	ret = hci_send_req(device, &disable_adv_rq, 1000);
-	if ( ret < 0 ) {
+	scan_cp.filter_dup 	= 0x00; // Filtering disabled.
+
+	struct hci_request disable_scan_rq = ble_hci_request(OCF_LE_SET_SCAN_ENABLE, LE_SET_SCAN_ENABLE_CP_SIZE, &status, &scan_cp);
+	ret = hci_send_req(device, &disable_scan_rq, 5000);
+	/*if ( ret < 0 ) {
+		ble_error("Failed to disable scan");
 		hci_close_dev(device);
-		ble_error("Failed to disable scan.");
 		return 0;
-	}
+	}*/
 	logger.log(Logger::LOG_DEBUG,TAG,"scan stopped");
 	return 1;
 }
