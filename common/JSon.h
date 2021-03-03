@@ -22,9 +22,14 @@ public:
 	bool error();
 	bool field(std::string tag, std::string &value);
 	bool field(std::string tag, unsigned long &value);
+	bool field(std::string tag, float &value);
+	bool field(std::string tag, bool &value);
 	bool field(std::string array,std::string tag,int idx, std::string &value);
 
 	bool arraySize(std::string tag, int &value);
+private:
+	std::vector <std::string> split(std::string str);
+
 protected:
 	cJSON * object(std::string tag);
 	cJSON *_jobj;

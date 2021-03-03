@@ -8,7 +8,6 @@
 #ifndef DOMOMANAGER_HISTORY_H_
 #define DOMOMANAGER_HISTORY_H_
 
-#include "RingBuffer.h"
 #include "MsgSys.h"
 #include <string>
 
@@ -17,8 +16,9 @@ public:
 	History(std::string topic_in,std::string topic_out,int size);
 	virtual ~History();
 private:
+	int _size;
 	void msg_notify (std::string topic, std::string message);
-	RingBuffer <float> *  ringBuff;
+	std::vector <float> buffer;
 };
 
 #endif /* DOMOMANAGER_HISTORY_H_ */

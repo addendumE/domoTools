@@ -60,6 +60,7 @@ bool AppConfig::loadConfig(std::string filename) {
 	   getInteger("mqtt_port", mqtt_port);
 	   getString("mqtt_user", mqtt_user);
 	   getString("mqtt_pwd", mqtt_pwd);
+	   getString("eq3_exec", eq3_exec);
 	   getVectorDevices("ble_devices", devices);
 	   return error;
 
@@ -73,9 +74,20 @@ void AppConfig::getVectorDevices(std::string name, devices_t &value)
     	const Setting &items = root[name];
     	for(int i = 0; i < items.getLength(); ++i)
     	{
-    		std::string mac=items[i].lookup("mac");
-    		std::string topic=items[i].lookup("topic");
-    		value[mac] = topic;
+    		std::string mac = items[i].lookup("mac");
+    		std::string topic = items[i].lookup("topic");
+    		std::string stype = items[i].lookup("type");
+    		ble_type type;
+
+			if (stype == "EQ3")
+				type = BLE_EQ3;
+			else if (stype == "TH")
+				type = BLE_TH;
+			else
+				type = BLE_UNK;
+    		value[mac].topic = topic;
+    		value[mac].type = (ble_type)type;
+
     		logger.log(Logger::LOG_DEBUG,TAG ,"%s[%d] is %s %s",name.c_str(),i,mac.c_str(),topic.c_str());
     	}
     }

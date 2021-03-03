@@ -16,20 +16,21 @@ extern Logger logger;
 
 void History::msg_notify (std::string topic, std::string message)
 {
-	float tmp[ringBuff->size()];
-	ringBuff->add(stof(message.c_str()));
-	logger.log(Logger::LOG_VERBOSE,TAG,"msg %s %s",topic.c_str(),message.c_str());
-	for(size_t i = 0; i < ringBuff->size(); ++i) {
-			tmp[i]=ringBuff->get(i);
+	buffer.push_back(stof(message.c_str()));
+	if (buffer.size()>=_size)
+	{
+		buffer.erase(buffer.begin());
 	}
-	cJSON * jobj = cJSON_CreateFloatArray(tmp,ringBuff->size());
-	cout << jobj_encode(jobj) << "\n";
+	logger.log(Logger::LOG_VERBOSE,TAG,"msg %s %s",topic.c_str(),message.c_str());
+	cJSON * jobj = cJSON_CreateFloatArray(&buffer[0],buffer.size());
+	std::string str = jobj_encode(jobj);
+	logger.log(Logger::LOG_VERBOSE,TAG,"%s",str.c_str());
 	cJSON_Delete(jobj);
 }
 
 
 History::History(std::string topic_in,std::string topic_out,int size) {
-	ringBuff = new RingBuffer <float>(size);
+	_size = size;
 	msgSrv.subscribe((MsgClient*)this,topic_in);
 	logger.log(Logger::LOG_VERBOSE,TAG,"history %s %d",topic_in.c_str(),size);
 }

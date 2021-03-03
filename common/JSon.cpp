@@ -30,13 +30,29 @@ JSonDecoder::JSonDecoder(std::string txt) {
 	}
 }
 
+std::vector <std::string> JSonDecoder::split(std::string str)
+{
+	std::vector<std::string> strings;
+	size_t start;
+	size_t end = 0;
+	char delim='/';
+	while ((start = str.find_first_not_of(delim, end)) != std::string::npos) {
+		end = str.find(delim, start);
+	    strings.push_back(str.substr(start, end - start));
+	}
+	return strings;
+}
+
 cJSON * JSonDecoder::object(std::string tag)
 {
-	cJSON *jtmp;
-	jtmp = cJSON_GetObjectItem(_jobj,tag.c_str());
-	if (jtmp == NULL)
-	{
-		logger.log(Logger::LOG_ERROR,TAG_DEC ,"field %s not found",tag.c_str());
+	cJSON *jtmp=_jobj;
+	std::vector <std::string> tags=split(tag);
+	for(auto i : tags) {
+		jtmp = cJSON_GetObjectItem(jtmp,i.c_str());
+		if (jtmp == NULL)
+		{
+			logger.log(Logger::LOG_ERROR,TAG_DEC ,"field %s not found",tag.c_str());
+		}
 	}
 	return jtmp;
 
@@ -75,6 +91,41 @@ bool JSonDecoder::field(std::string tag, unsigned long &value)
 	value = _jtmp->valueint;
 	return true;
 }
+
+bool JSonDecoder::field(std::string tag, float &value)
+{
+	cJSON *_jtmp;
+	_jtmp = object(tag);
+	if (_jtmp == NULL)
+	{
+		return false;
+	}
+	if (!cJSON_IsNumber(_jtmp))
+	{
+		logger.log(Logger::LOG_ERROR,TAG_DEC ,"field %s is not a string",tag.c_str());
+		return false;
+	}
+	value = _jtmp->valuedouble;
+	return true;
+}
+
+bool JSonDecoder::field(std::string tag, bool &value)
+{
+	cJSON *_jtmp;
+	_jtmp = object(tag);
+	if (_jtmp == NULL)
+	{
+		return false;
+	}
+	if (!cJSON_IsBool(_jtmp))
+	{
+		logger.log(Logger::LOG_ERROR,TAG_DEC ,"field %s is not a string",tag.c_str());
+		return false;
+	}
+	value = _jtmp->valueint;
+	return true;
+}
+
 
 bool JSonDecoder::arraySize(std::string tag, int &value)
 {

@@ -10,9 +10,8 @@
 #include "MsgSys.h"
 #include "Logger.h"
 #include "History.h"
-
-
 #include <string.h>
+#include "AppConfig.h"
 
 
 class App: public MsgClient

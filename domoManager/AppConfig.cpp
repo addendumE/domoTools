@@ -18,7 +18,6 @@ extern Logger logger;
 using namespace std;
 using namespace libconfig;
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -115,7 +114,6 @@ void AppConfig::getInteger(std::string name, int &value)
     	 error = true;
      }
 }
-
 
 AppConfig::~AppConfig() {
 	// TODO Auto-generated destructor stub

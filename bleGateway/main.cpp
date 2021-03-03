@@ -10,7 +10,8 @@ int main(int argc, char **argv) {
 	std::string confFile=string(argv[1]);
 	App *app = new App(confFile);
 	while(1) {
-	    sleep(1);
+		app->run();
+	    usleep(100000);
     }
 	return 0;
 }

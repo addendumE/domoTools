@@ -143,7 +143,7 @@ int ble_scan_loop(std::vector <ble_adv_t> &data)
 				ba2str(&(info->bdaddr), addr);
 				ble_adv_t adv;
 				adv.mac = std::string(addr);
-				adv.data = std::string(info->data,info->data+info->length+1);
+				adv.data = std::vector <unsigned char>(info->data,info->data+info->length+1);
 				data.push_back(adv);
 				//bleProcess(addr,info->data,info->length);
 				offset = info->data + info->length + 2;

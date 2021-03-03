@@ -35,7 +35,9 @@ App::App(std::string confFile)
 	appConfig.loadConfig(confFile);
 	msgSrv.start(appConfig.mqtt_user, appConfig.mqtt_pwd,appConfig.mqtt_host,appConfig.mqtt_port);
 	msgSrv.subscribe((MsgClient*)this,"local::/#");
-
+//	eq3Cmd("00:1A:22:0E:DB:2C","temp 22");
+//	eq3Cmd("00:1A:22:0E:DB:2C","status");
+	//./eq3.exp 00:1A:22:0E:DB:2C json
 }
 
 App::~App() {

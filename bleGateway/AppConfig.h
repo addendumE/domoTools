@@ -15,10 +15,17 @@
 
 #include <libconfig.h++>
 
-using devices_t = std::map <std::string,std::string>;
+enum ble_type {BLE_TH,BLE_EQ3,BLE_UNK};
 
 class AppConfig {
 public:
+	struct  device_t
+	{
+		std::string topic;
+		ble_type type;
+	};
+	using devices_t = std::map <std::string,device_t>;
+
 	AppConfig();
 	virtual ~AppConfig();
 	bool loadConfig(std::string filename);
@@ -26,6 +33,7 @@ public:
 	int mqtt_port;
 	std::string mqtt_user;
 	std::string mqtt_pwd;
+	std::string eq3_exec;
 	devices_t devices;
 
 private:

@@ -14,7 +14,7 @@
 struct ble_adv_t
 {
 	std::string mac;
-	std::string data;
+	std::vector <unsigned char> data;
 };
 
 int ble_open();
