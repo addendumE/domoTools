@@ -56,15 +56,14 @@ bool RRdbDecoder::query(RRdb::query_t &qry)
 	return true;
 }
 
-
 std::string encode_response(RRdb::response_t &resp)
 {
 	cJSON * jobj = cJSON_CreateObject();
 
-	cJSON_AddNumberToObject(jobj,"start",resp.start);
-	cJSON_AddNumberToObject(jobj,"end",resp.start);
-	cJSON_AddNumberToObject(jobj,"step",resp.start);
-	cJSON_AddNumberToObject(jobj,"samples",resp.data.size()/resp.tracks);
+	cJSON_AddNumberToObject(jobj,"start", (double)resp.start);
+	cJSON_AddNumberToObject(jobj,"end",(double)resp.start);
+	cJSON_AddNumberToObject(jobj,"step",(double)resp.start);
+	cJSON_AddNumberToObject(jobj,"samples",(double)resp.data.size()/resp.tracks);
 
 
 	struct cJSON * array = cJSON_CreateArray();
@@ -97,4 +96,3 @@ std::string encode_response(RRdb::response_t &resp)
 
 	return jobj_encode(jobj);
 }
-

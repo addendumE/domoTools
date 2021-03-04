@@ -20,6 +20,6 @@ public:
 private:
 };
 
-std::string encode_response(RRdb::response_t &resp);
+//std::string encode_response(RRdb::response_t &resp);
 
 #endif /* JOBJ_H_ */

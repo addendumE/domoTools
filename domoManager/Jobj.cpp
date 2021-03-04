@@ -56,7 +56,7 @@ bool RRdbDecoder::query(RRdb::query_t &qry)
 	return true;
 }
 
-
+/*
 std::string encode_response(RRdb::response_t &resp)
 {
 	cJSON * jobj = cJSON_CreateObject();
@@ -97,4 +97,4 @@ std::string encode_response(RRdb::response_t &resp)
 
 	return jobj_encode(jobj);
 }
-
+*/

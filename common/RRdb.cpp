@@ -129,8 +129,8 @@ int RRdb::query(query_t &qry,response_t &resp)
 	}
 
 	char **ds_namv;
-	time_t real_start,real_end;
-	unsigned long real_step;
+	time_t real_start=0,real_end=0;
+	unsigned long real_step=0;
 	unsigned long real_boh;
 	int mah;
 	ret = rrd_xport(
