@@ -13,9 +13,10 @@
 
 class History:MsgClient  {
 public:
-	History(std::string topic_in,std::string topic_out,int size);
+	History(std::string ,std::string ,int );
 	virtual ~History();
 private:
+	std::string _topic_out;
 	int _size;
 	void msg_notify (std::string topic, std::string message);
 	std::vector <float> buffer;

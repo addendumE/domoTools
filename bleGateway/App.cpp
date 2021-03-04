@@ -72,7 +72,13 @@ void App::bleProcess(std::string addr, std::vector <unsigned char> data)
 	auto it = appConfig.devices.find(addr);
 	if (it == appConfig.devices.end()) return;
 	std::string topic = it->second.topic;
-	publish(topic+"rssi",(1.0f*(int8_t)data[data.size()-1]));
+	float rssi = 1.0f*(int8_t)data[data.size()-1];
+	publish(topic+"rssi",rssi);
+	if (rssi<-100) rssi = -100;
+	if (rssi>-25) rssi = -25;
+
+	publish(topic+"signal",100.0f*(rssi+100.0f)/(-25+100.0f));
+
 	//check if the device is a MIIJA T/H monitor
 	if (it->second.type == BLE_TH && data[5]==0x95 && data[6]==0xFE && data.size()>=18){
 		switch(data[0x12])
