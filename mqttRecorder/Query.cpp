@@ -56,6 +56,6 @@ void Query::rrdb_query(std::string topic,std::string sqry)
 	{
 		std::string out = encode_response(resp);
 		std::string topicresp=topic.replace(0,11,"/query/resp/");
-		msgSrv.publish(topicresp,out);
+		msgSrv.publish(topicresp,out,false);
 	}
 }

@@ -25,7 +25,7 @@ public:
 	void mqtt_connect(string user, string password,string host,int port);
 	void mqtt_subscribe(std::string topic);
 	void unsubscribe(string topic);
-	void publish(string topic,string message);
+	void publish(string topic,string message, bool retain = true);
 	bool match_sub(std::string topic,std::string sub);
 
 	virtual void mqtt_message(std::string topic,std::string msg) {};

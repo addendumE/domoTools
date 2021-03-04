@@ -44,10 +44,10 @@ void Mqtt::unsubscribe(string topic)
 	}
 }
 
-void Mqtt::publish(string topic,string message)
+void Mqtt::publish(string topic,string message, bool retain)
 {
 	logger.log(Logger::LOG_DEBUG,TAG,"publish %s->%s",topic.c_str(),message.c_str());;
-	int ret = mosquitto_publish(_client,NULL,topic.c_str(),message.length(),message.c_str(),2,false);
+	int ret = mosquitto_publish(_client,NULL,topic.c_str(),message.length(),message.c_str(),2,retain);
 	if (ret == MOSQ_ERR_SUCCESS)
 	{
 		logger.log(Logger::LOG_VERBOSE,TAG,"published %s %s",topic.c_str(),message.c_str());
