@@ -145,6 +145,19 @@ int Eq3::decode(std::string fname)
 	msgSrv.publish(_topic+"lowBatt",to_string(_data.lowBatt));
 	msgSrv.publish(_topic+"openWind",to_string(0));
 	msgSrv.publish(_topic+"vacation",to_string(_data.vacation));
+	std::string mode = "Unk";
+	if (_data.vacation)
+	{
+		mode="Vac";
+	}
+	else if (_data.autoMode)
+	{
+		mode="Auto";
+	}
+	else if (_data.manualMode)
+	{
+		mode = "Man";
+	}
 	return 1;
 }
 
