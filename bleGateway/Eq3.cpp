@@ -158,6 +158,8 @@ int Eq3::decode(std::string fname)
 	{
 		mode = "Man";
 	}
+	msgSrv.publish(_topic+"mode",mode);
+
 	return 1;
 }
 
