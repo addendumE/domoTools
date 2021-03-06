@@ -38,6 +38,7 @@ void test() {
 }
 
 AppConfig::AppConfig() {
+	logger.level(TAG,Logger::LOG_ERROR);
 	error = false;
 }
 

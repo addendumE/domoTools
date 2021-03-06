@@ -31,6 +31,7 @@ void App::msg_notify (std::string topic, std::string message)
 
 App::App(std::string confFile)
 {
+	logger.level(TAG,Logger::LOG_ERROR);
 	appConfig.loadConfig(confFile);
 	msgSrv.start(appConfig.mqtt_user, appConfig.mqtt_pwd,appConfig.mqtt_host,appConfig.mqtt_port);
 	rrDb.start(appConfig.rrd_sock,appConfig.rrd_db);

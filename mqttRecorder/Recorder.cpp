@@ -15,7 +15,7 @@ extern RRdb	rrDb;
 #define TAG "Recorder"
 
 Recorder::Recorder() {
-
+	logger.level(TAG,Logger::LOG_ERROR);
 }
 
 bool Recorder::start(std::vector <std::string> rec_topics)

@@ -32,7 +32,6 @@ bool RRdb::start(std::string daemon,std::string dbfolder)
 {
 	_dbFolder = dbfolder;
 	int ret;
-	logger.level(TAG,Logger::LOG_VERBOSE);
 	ret = rrdc_connect(daemon.c_str());
 	if (ret)
 		logger.log(Logger::LOG_ERROR,TAG,"%s",rrd_get_error());
