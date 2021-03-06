@@ -6,7 +6,7 @@
  */
 
 #include "Recorder.h"
-
+#include <stdexcept>      // std::invalid_argument
 
 extern MsgSrv msgSrv;
 extern Logger logger;
@@ -38,23 +38,23 @@ void Recorder::msg_notify (std::string topic, std::string message)
 int Recorder::update_sample(string topicName, string payload)
 {
 	int ret;
-	char* p;
 	double num;
-	num = strtod(payload.c_str(), &p);
-	if (*p) {
-		ret = -1;
+	try {
+		num = stod(payload);
 	}
-	else {
-		if (rrDb.update(topicName,num)==1)
+	catch (const std::invalid_argument& ia) {
+		  return -1;
+	}
+
+	if (rrDb.update(topicName,num)==1)
+	{
+		if (rrDb.create(topicName)!=0)
 		{
-			if (rrDb.create(topicName)!=0)
-			{
-				ret = -1;
-			}
-			else
-			{
-				ret = rrDb.update(topicName,num);
-			}
+			ret = -1;
+		}
+		else
+		{
+			ret = rrDb.update(topicName,num);
 		}
 	}
 	return ret;
